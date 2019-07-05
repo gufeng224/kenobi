@@ -1,0 +1,7 @@
+---- audio_mix_digital_mic Matches (6 in 2 files) ----
+072-module.htm (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\mdk-arm\072-module):<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;audio_mix_digital_mic
+072-module.htm (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\mdk-arm\072-module):<P><STRONG><a name="[c7]"></a>audio_mix_digital_mic</STRONG> (Thumb, 112 bytes, Stack size 24 bytes, usbd_audio.o(i.audio_mix_digital_mic))
+072-module.htm (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\mdk-arm\072-module):<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = audio_mix_digital_mic
+072-module.htm (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\mdk-arm\072-module):<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;audio_mix_digital_mic
+Usbd_audio.c (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\middlewares\st\stm32_usb_device_library\class\audio\src):void audio_mix_digital_mic(uint8_t* dst, uint8_t* ch[])
+Usbd_audio.c (\\mac\home\desktop\kanobi demo relese\kenobi\fw\072-module-over-factory\middlewares\st\stm32_usb_device_library\class\audio\src):                audio_mix_digital_mic(in_buf,ch);
