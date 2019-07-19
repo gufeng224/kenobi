@@ -73,7 +73,7 @@ DMA_HandleTypeDef hdma_spi2_rx;
 
 UART_HandleTypeDef huart1;
 TIM_HandleTypeDef htim7;
-IWDG_HandleTypeDef hiwdg;
+
 
 
 
@@ -91,7 +91,6 @@ int fputc(int ch, FILE *f)
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void Clock_Inter_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
@@ -100,7 +99,6 @@ static void MX_I2S1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_ADC_Init(void);
 static void MX_TIM7_Init(void);
-static void MX_IWDG_Init(void);
 //static void Flash_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -131,9 +129,9 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-   Clock_Inter_Config();
+
   /* USER CODE END Init */
-  MX_IWDG_Init();
+
   /* Configure the system clock */
   SystemClock_Config();
 
@@ -160,7 +158,7 @@ int main(void)
   /* USER CODE END 2 */
   HAL_Delay(50);       //等待电容充电稳定
   hd_version_init(&hadc);
-  printf("hd_version = %d\n", hd_version_getVersion());
+ // printf("hd_version = %d\n", hd_version_getVersion());
 
   if(HD_VERSION_ANALOG_MIC == hd_version_getVersion()) {        //模拟mic，初始化85l04，关闭i2s1
       nau85l04_init(&hi2c1);
@@ -172,7 +170,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		 HAL_IWDG_Refresh(&hiwdg);
       if(flag_usb_read) {
           static int ledvalue=0;
           //led_set(ledvalue);
@@ -199,48 +196,7 @@ int main(void)
   /* USER CODE END 3 */
 
 }
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void Clock_Inter_Config(void)
-{
-  
-  
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /**Initializes the CPU, AHB and APB busses clocks 
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /**Initializes the CPU, AHB and APB busses clocks 
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -255,12 +211,11 @@ void SystemClock_Config(void)
     /**Initializes the CPU, AHB and APB busses clocks 
     */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14
-                              |RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+                              |RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.HSI14State = RCC_HSI14_ON;
-	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = 16;
   RCC_OscInitStruct.HSI14CalibrationValue = 16;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -559,29 +514,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
      
 }
-static void MX_IWDG_Init(void)
-{
 
-  /* USER CODE BEGIN IWDG_Init 0 */
-
-  /* USER CODE END IWDG_Init 0 */
-
-  /* USER CODE BEGIN IWDG_Init 1 */
-
-  /* USER CODE END IWDG_Init 1 */
-  hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-  hiwdg.Init.Window = 4095;
-  hiwdg.Init.Reload = 4095;
-  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN IWDG_Init 2 */
-
-  /* USER CODE END IWDG_Init 2 */
-
-}
 /* USER CODE END 4 */
 
 /**
